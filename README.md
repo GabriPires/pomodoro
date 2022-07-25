@@ -18,7 +18,7 @@
 
 <!-- TABLE OF CONTENTS -->
 <details>
-  <summary>Table of Contents</summary>
+  <summary>Conteúdos</summary>
   <ol>
     <li>
       <a href="#about-the-project">Sobre o projet</a>
@@ -39,7 +39,7 @@
 
 <!-- ABOUT THE PROJECT -->
 
-## About The Project
+## Sobre o projeto
 
 O projeto foi construído ao longo do módulo de React do Ignite da Rocketseat com o objetivo de estudar e aprofundar os conhecimentos em React, Context API e afins.
 
