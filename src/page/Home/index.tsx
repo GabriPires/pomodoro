@@ -16,17 +16,23 @@ import {
 const newCycleFormSchema = zod.object({
   task: zod.string().min(1, 'Informe a tarefa'),
   minutesAmount: zod
-    .string()
+    .number()
     .min(5, 'O ciclo precisa ser de no mínimo 5 minutos')
     .max(60, 'O ciclo precisa ser de no máximo 60 minutos'),
 });
 
+type NewCycleFormData = zod.infer<typeof newCycleFormSchema>;
+
 export function Home() {
-  const { register, handleSubmit, watch } = useForm({
+  const { register, handleSubmit, watch } = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormSchema),
+    defaultValues: {
+      task: '',
+      minutesAmount: 0,
+    },
   });
 
-  const handleCreateNewCycle = (data) => {
+  const handleCreateNewCycle = (data: NewCycleFormData) => {
     console.log(data);
   };
 
