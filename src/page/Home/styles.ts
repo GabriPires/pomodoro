@@ -13,6 +13,10 @@ export const HomeContainer = styled.main`
     flex-direction: column;
     align-items: center;
     gap: 3.5rem;
+
+    @media (max-width: 800px) {
+      gap: 2rem;
+    }
   }
 `;
 
