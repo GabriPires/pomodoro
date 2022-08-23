@@ -61,6 +61,19 @@ export const CyclesContextProvider = ({
             }),
             activeCycleId: null,
           };
+
+        case 'MARK_CURRENT_CYCLE_AS_FINISHED':
+          return {
+            ...state,
+            cycles: state.cycles.map((cycle) => {
+              if (cycle.id === state.activeCycleId) {
+                return { ...cycle, finishedDate: new Date() };
+              } else {
+                return cycle;
+              }
+            }),
+            activeCycleId: null,
+          };
       }
 
       return state;
@@ -79,22 +92,12 @@ export const CyclesContextProvider = ({
   };
 
   const markCurrentCycleAsFinished = () => {
-    // setCycles((prevState) =>
-    //   prevState.map((cycle) => {
-    //     if (cycle.id === activeCycleId) {
-    //       return { ...cycle, finishedDate: new Date() };
-    //     } else {
-    //       return cycle;
-    //     }
-    //   }),
-    // );
     dispatch({
       type: 'MARK_CURRENT_CYCLE_AS_FINISHED',
       payload: {
         activeCycleId,
       },
     });
-    setActiveCycleId(null);
   };
 
   const createNewCycle = (data: CreateCycleData) => {
@@ -111,7 +114,6 @@ export const CyclesContextProvider = ({
         newCycle,
       },
     });
-    // setCycles((prevState) => [...prevState, newCycle]);
     setAmountSecondsPassed(0);
   };
 
@@ -127,7 +129,7 @@ export const CyclesContextProvider = ({
   return (
     <CyclesContext.Provider
       value={{
-        cycles: cyclesState,
+        cycles,
         activeCycle,
         activeCycleId,
         amountSecondsPassed,
