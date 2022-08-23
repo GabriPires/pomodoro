@@ -31,20 +31,46 @@ interface CyclesContextProviderProps {
   children: React.ReactNode;
 }
 
+interface CyclesState {
+  cycles: Cycle[];
+  activeCycleId: string | null;
+}
+
 export const CyclesContextProvider = ({
   children,
 }: CyclesContextProviderProps) => {
-  const [cycles, dispatch] = useReducer((state: Cycle[], action: any) => {
-    switch (action.type) {
-      case 'ADD_NEW_CYCLE':
-        return [...state, action.payload.newCycle];
-    }
+  const [cyclesState, dispatch] = useReducer(
+    (state: CyclesState, action: any) => {
+      switch (action.type) {
+        case 'ADD_NEW_CYCLE':
+          return {
+            ...state,
+            cycles: [...state.cycles, action.payload.newCycle],
+            activeCycleId: action.payload.newCycle.id,
+          };
 
-    return state;
-  }, []);
+        case 'INTERRUPT_CURRENT_CYCLE':
+          return {
+            ...state,
+            cycles: state.cycles.map((cycle) => {
+              if (cycle.id === state.activeCycleId) {
+                return { ...cycle, interruptedDate: new Date() };
+              } else {
+                return cycle;
+              }
+            }),
+            activeCycleId: null,
+          };
+      }
 
-  const [activeCycleId, setActiveCycleId] = useState<string | null>(null);
+      return state;
+    },
+    { cycles: [], activeCycleId: null },
+  );
+
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0);
+
+  const { cycles, activeCycleId } = cyclesState;
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId);
 
@@ -86,7 +112,6 @@ export const CyclesContextProvider = ({
       },
     });
     // setCycles((prevState) => [...prevState, newCycle]);
-    setActiveCycleId(id);
     setAmountSecondsPassed(0);
   };
 
@@ -97,22 +122,12 @@ export const CyclesContextProvider = ({
         activeCycleId,
       },
     });
-    // setCycles((prevState) =>
-    //   prevState.map((cycle) => {
-    //     if (cycle.id === activeCycleId) {
-    //       return { ...cycle, interruptedDate: new Date() };
-    //     } else {
-    //       return cycle;
-    //     }
-    //   }),
-    // );
-    setActiveCycleId(null);
   };
 
   return (
     <CyclesContext.Provider
       value={{
-        cycles,
+        cycles: cyclesState,
         activeCycle,
         activeCycleId,
         amountSecondsPassed,
