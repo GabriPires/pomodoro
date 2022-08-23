@@ -1,3 +1,4 @@
+import { differenceInSeconds } from 'date-fns';
 import { createContext, useEffect, useReducer, useState } from 'react';
 import {
   addNewCycleAction,
@@ -48,16 +49,21 @@ export const CyclesContextProvider = ({
     },
   );
 
-  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0);
+  const { cycles, activeCycleId } = cyclesState;
+  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId);
+
+  const [amountSecondsPassed, setAmountSecondsPassed] = useState(() => {
+    if (activeCycle) {
+      return differenceInSeconds(new Date(), new Date(activeCycle.startDate));
+    }
+
+    return 0;
+  });
 
   useEffect(() => {
     const stateJSON = JSON.stringify(cyclesState);
     localStorage.setItem('@gabpires-pomodoro:cycles-state-1.0.0', stateJSON);
   }, [cyclesState]);
-
-  const { cycles, activeCycleId } = cyclesState;
-
-  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId);
 
   const setSecondsPassed = (secondsPassed: number) => {
     setAmountSecondsPassed(secondsPassed);
